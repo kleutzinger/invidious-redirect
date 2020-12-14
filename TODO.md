@@ -1,0 +1,2 @@
+- [ ] get/cache invidious instances from https://instances.invidio.us/
+- [ ] redirect all links to invidious instances (imgs...)
