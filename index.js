@@ -36,6 +36,9 @@ app.get("/", (req, res) => {
     <h2>example: 
       <a href="/watch?v=1WCsfcQgjk8"> invidious.kevbot.xyz/watch?v=1WCsfcQgjk8 </a>
     </h2>
+    </h3>
+      <a href="https://github.com/kleutzinger/invidious-redirect"> source code (github)</a>
+    </h3
     `
   );
   // res.redirect("https://google.com");
