@@ -1,2 +1,4 @@
-- [ ] get/cache invidious instances from https://instances.invidio.us/
-- [ ] redirect all links to invidious instances (imgs...)
+- [ ] get invidious instances from https://instances.invidio.us/
+- - [ ] chache result
+- - [ ] update daily
+- [ ] redirect all links to invidious instances (img. ...)

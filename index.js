@@ -5,10 +5,9 @@ const express = require("express");
 const axios = require("axios");
 
 const PORT = process.env.PORT || 5000;
-const INTERNAL_URL = `http://localhost:${PORT}`;
-
+const api = require("./api.js");
 const app = express();
-// const _ = require("lodash");
+const _ = require("lodash");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
@@ -29,26 +28,22 @@ const server = app.listen(PORT, () => {
 
 app.get("/", (req, res) => {
   console.log(req.query);
-  res.end(
-    `
-    <h1>Hi, I redirect things to invidious instances, give my url a /watch?v=...</h1>
-    </br>
-    <h2>example: 
-      <a href="/watch?v=1WCsfcQgjk8"> invidious.kevbot.xyz/watch?v=1WCsfcQgjk8 </a>
-    </h2>
-    </h3>
-      <a href="https://github.com/kleutzinger/invidious-redirect"> source code (github)</a>
-    </h3
-    `
-  );
-  // res.redirect("https://google.com");
+  res.sendFile("index.html", { root: __dirname });
 });
 
-app.get("/watch", (req, res) => {
-  const { v } = req.query;
-  if (v) {
-    res.redirect(`https://invidious.fdn.fr/watch?v=${v}`);
-  } else {
-    res.status(400).json({ message: "Please supply watch?v=" });
+app.get("/watch", async (req, res, next) => {
+  try {
+    // const best_uri = "https://youtube.com/";
+    const { v } = req.query;
+    if (v) {
+      const { best_uri, all_instances } = await api.getInstances();
+      // best uri has a slash already
+      res.redirect(`${best_uri}watch?v=${v}`);
+      // res.redirect(`https://invidious.fdn.fr/watch?v=${v}`);
+    } else {
+      res.status(400).json({ message: "Please supply watch?v=" });
+    }
+  } catch (error) {
+    next(error);
   }
 });
