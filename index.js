@@ -6,11 +6,12 @@ const axios = require("axios");
 
 const PORT = process.env.PORT || 5000;
 const api = require("./api.js");
+const rank = require("./rank.js");
 const app = express();
 const _ = require("lodash");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
-
+const urljoin = require("url-join");
 const path = require("path");
 var fs = require("fs");
 app.use(bodyParser.json());
@@ -36,13 +37,39 @@ app.get("/watch", async (req, res, next) => {
     // const best_uri = "https://youtube.com/";
     const { v } = req.query;
     if (v) {
-      const { best_uri, all_instances } = await api.getInstances();
+      const { best_uri, all_instances } = await api.get();
       // best uri has a slash already
-      res.redirect(`${best_uri}watch?v=${v}`);
+      const full_url = urljoin(`${best_uri}`, `watch?v=${v}`);
+      res.redirect(full_url);
       // res.redirect(`https://invidious.fdn.fr/watch?v=${v}`);
     } else {
       res.status(400).json({ message: "Please supply watch?v=" });
     }
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/api", async (req, res, next) => {
+  try {
+    res.json(await api.get());
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/cache", async (req, res, next) => {
+  try {
+    res.json(api.cache.stats);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/rank", async (req, res, next) => {
+  try {
+    const summaries = await rank.get_ranks();
+    res.json({ summaries });
   } catch (error) {
     next(error);
   }

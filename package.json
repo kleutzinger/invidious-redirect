@@ -19,6 +19,7 @@
     "lodash": "^4.17.20",
     "morgan": "^1.10.0",
     "node-cache": "^5.1.2",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "url-join": "^4.0.1"
   }
 }

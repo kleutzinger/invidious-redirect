@@ -1,14 +1,15 @@
 // todo
 const axios = require("axios");
 const fs = require("fs");
+const _ = require("lodash");
 const NodeCache = require("node-cache");
-const myCache = new NodeCache({ stdTTL: 3600 * 24, checkperiod: 120 });
+const cache = new NodeCache({ stdTTL: 3600 * 24, checkperiod: 120 });
 const EXTERNAL_API_ENDPOINT = `https://instances.invidio.us/instances.json?pretty=1&sort_by=type,users`;
 
 async function check_cache() {
   // return false on miss, value on hit
   try {
-    const value = myCache.get("all_instances");
+    const value = cache.get("all_instances");
     if (value == undefined) {
       // cache miss
       return false;
@@ -44,8 +45,10 @@ async function getInstances() {
       console.log("cache hit");
     } else {
       all_instances = await getExternal();
+      //prettier-ignore
+      all_instances = _.filter(all_instances, (e) => _.get(e, "[1].type") != "onion");
       console.log("cache miss, setting");
-      myCache.set("all_instances", all_instances);
+      cache.set("all_instances", all_instances);
     }
     const out = { all_instances, best_uri: bestInstanceUri(all_instances) };
     return out;
@@ -54,10 +57,9 @@ async function getInstances() {
     return {};
   }
 }
-
 function bestInstanceUri(data) {
   // get the uri from the instance with the most users
   return data[0][1].uri;
 }
 
-module.exports = { getInstances };
+module.exports = { get: getInstances, cache: cache };
