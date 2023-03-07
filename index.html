@@ -10,8 +10,14 @@
 <body>
   <h1>Hi, I redirect things to invidious instances, give my url a /watch?v=...</h1>
   </br>
-  <h2>example:
+  <h2>examples:
+    <br>
     <a href="/watch?v=1WCsfcQgjk8"> invidious.kevbot.xyz/watch?v=1WCsfcQgjk8 </a>
+    <br>
+    <a href="/@kevinleutzinger3028">invidious.kevbot.xyz/@kevinleutzinger3028</a>
+    <br>
+    <a
+      href="/playlist?list=PL6XKQrv4qTdPRX7sZxRDIolGmnwLxcV8X">invidious.kevbot.xyz/playlist?list=PL6XKQrv4qTdPRX7sZxRDIolGmnwLxcV8X</a>
   </h2>
   <h3>
     <a href="/api">/api</a>
@@ -21,6 +27,12 @@
     <a href="https://instances.invidio.us/">instances pulled from here</a>
     </br>
     <a href="https://github.com/kleutzinger/invidious-redirect"> source code (github)</a>
+    <form action="/get-link" method="get">
+      <p>manually paste any youtube link here</p>
+      <input type="text" name="url" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+      <input type="submit" value="go to link">
+    </form>
+
   </h3>
 
 </body>

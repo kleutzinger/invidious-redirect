@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 5000;
 const api = require("./api.js");
 const rank = require("./rank.js");
 const app = express();
+const url = require("url");
 const _ = require("lodash");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
@@ -32,24 +33,6 @@ app.get("/", (req, res) => {
   res.sendFile("index.html", { root: __dirname });
 });
 
-app.get("/watch", async (req, res, next) => {
-  try {
-    // const best_uri = "https://youtube.com/";
-    const { v } = req.query;
-    if (v) {
-      const { best_uri, all_instances } = await api.get();
-      // best uri has a slash already
-      const full_url = urljoin(`${best_uri}`, `watch?v=${v}`);
-      res.redirect(full_url);
-      // res.redirect(`https://invidious.fdn.fr/watch?v=${v}`);
-    } else {
-      res.status(400).json({ message: "Please supply watch?v=" });
-    }
-  } catch (error) {
-    next(error);
-  }
-});
-
 app.get("/api", async (req, res, next) => {
   try {
     res.json(await api.get());
@@ -70,6 +53,34 @@ app.get("/rank", async (req, res, next) => {
   try {
     const summaries = await rank.get_ranks();
     res.json({ summaries });
+  } catch (error) {
+    next(error);
+  }
+});
+
+async function get_redirected_url(path) {
+  // path = /watch?v=123
+  const { best_uri } = await api.get();
+  const full_url = urljoin(best_uri, path);
+  console.log("redirecting to: " + full_url);
+  return full_url;
+}
+
+app.get("/get-link", async (req, res, next) => {
+  try {
+    console.log(req.query);
+    const { url: given_url } = req.query;
+    const path = url.parse(given_url).path;
+    res.redirect(await get_redirected_url(path));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/*", async (req, res, next) => {
+  try {
+    // catch-all to redirect to best instance
+    res.redirect(await get_redirected_url(req.url));
   } catch (error) {
     next(error);
   }
