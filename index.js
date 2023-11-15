@@ -77,6 +77,11 @@ app.get("/get-link", async (req, res, next) => {
   }
 });
 
+app.get("/robots.txt", (req, res) => {
+  // 404 for robots.txt
+  res.status(404).send("not found");
+});
+
 app.get("/*", async (req, res, next) => {
   try {
     // catch-all to redirect to best instance
