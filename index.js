@@ -3,6 +3,7 @@ dotenv.config();
 
 const express = require("express");
 const axios = require("axios");
+const urlParser = require("js-video-url-parser");
 
 const PORT = process.env.PORT || 5000;
 const api = require("./api.js");
@@ -61,6 +62,10 @@ app.get("/rank", async (req, res, next) => {
 async function get_redirected_url(path) {
   // path = /watch?v=123
   const { best_uri } = await api.get();
+  const parsed = urlParser.parse(path);
+  if (parsed && parsed.provider === "youtube") {
+    path = "/watch?v=" + parsed.id;
+  }
   const full_url = urljoin(best_uri, path);
   console.log("redirecting to: " + full_url);
   return full_url;
